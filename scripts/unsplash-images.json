@@ -1,0 +1,68 @@
+{
+  "gallery": [
+    {
+      "local": "assets/images/gallery/luxury-custom-home-construction-new-england-1.jpg",
+      "credit": "Cam Fattahi",
+      "unsplashUrl": "https://unsplash.com/photos/white-and-brown-building-_0QJ3K5eqms"
+    },
+    {
+      "local": "assets/images/gallery/luxury-custom-home-construction-new-england-2.jpg",
+      "credit": "Michael Denning",
+      "unsplashUrl": "https://unsplash.com/photos/white-concrete-building-near-body-of-water-under-cloudy-sky-during-daytime-FQfKXiD4Rws"
+    },
+    {
+      "local": "assets/images/gallery/luxury-custom-home-construction-new-england-3.jpg",
+      "credit": "Saro Contemporary Artist",
+      "unsplashUrl": "https://unsplash.com/photos/white-and-gray-house-beside-body-of-water-during-daytime-_S7qj7m5lnw"
+    },
+    {
+      "local": "assets/images/gallery/luxury-custom-home-construction-new-england-4.jpg",
+      "credit": "Bonnie Kittle",
+      "unsplashUrl": "https://unsplash.com/photos/green-grass-field-near-lake-under-white-clouds-during-daytime-N1B3pCIaMs0"
+    },
+    {
+      "local": "assets/images/gallery/luxury-custom-home-construction-new-england-5.jpg",
+      "credit": "Bonnie Kittle",
+      "unsplashUrl": "https://unsplash.com/photos/green-grass-field-under-cloudy-sky-during-daytime-dLtoLq5G25c"
+    },
+    {
+      "local": "assets/images/gallery/luxury-custom-home-construction-new-england-6.jpg",
+      "credit": "Jessica Langbein",
+      "unsplashUrl": "https://unsplash.com/photos/a-white-colonial-house-with-black-shutters-YcWBKNRwwIs"
+    },
+    {
+      "local": "assets/images/gallery/luxury-custom-home-construction-new-england-7.jpg",
+      "credit": "Sebastian Enrique",
+      "unsplashUrl": "https://unsplash.com/photos/large-stone-house-on-the-waters-edge-5cCGsUjxy8o"
+    },
+    {
+      "local": "assets/images/gallery/luxury-custom-home-construction-new-england-8.jpg",
+      "credit": "Andri Kyrychok",
+      "unsplashUrl": "https://unsplash.com/photos/aerial-view-of-a-small-town-with-a-church-steeple-wSqzNP1fsHw"
+    }
+  ],
+  "hero": [
+    {
+      "local": "assets/images/hero/modern-home-exterior-architecture-1.jpg",
+      "credit": "Dan Burton",
+      "unsplashUrl": "https://unsplash.com/photos/black-and-white-concrete-building-CuCSy7zYrdA"
+    },
+    {
+      "local": "assets/images/hero/modern-home-exterior-architecture-2.jpg",
+      "credit": "Umut Tülüoğlu",
+      "unsplashUrl": "https://unsplash.com/photos/modern-apartment-buildings-with-unique-balcony-designs-4S4hjPqs2cQ"
+    }
+  ],
+  "about": [
+    {
+      "local": "assets/images/about/construction-workers-craftsmanship-1.jpg",
+      "credit": "Brad Weaver",
+      "unsplashUrl": "https://unsplash.com/photos/a-couple-of-women-standing-on-top-of-a-wooden-floor-MrZWtlKDKRw"
+    },
+    {
+      "local": "assets/images/about/construction-workers-craftsmanship-2.jpg",
+      "credit": "Swastik Arora",
+      "unsplashUrl": "https://unsplash.com/photos/a-black-and-white-photo-of-a-brick-wall-t1vAuYBwtGg"
+    }
+  ]
+}
