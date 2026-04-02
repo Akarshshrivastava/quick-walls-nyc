@@ -1,216 +1,261 @@
-/* =====================================================
-   Start to Finish Construction LLC — main.js
-   Handles: navbar, scroll animations, gallery lightbox,
-            hamburger menu, form, smooth interactions
-   ===================================================== */
+/* ==========================================================
+   MAIN.JS — Start to Finish Construction LLC
+   ========================================================== */
 
-(function () {
-  'use strict';
+document.addEventListener('DOMContentLoaded', () => {
+  initNavbar();
+  initHamburger();
+  initScrollReveal();
+  initSmoothScroll();
+  initScrollSpy();
+  initGalleryLightbox();
+  initGalleryToggle();
+  initContactForm();
+  initBASlider('baSlider1', 'baAfter1', 'baHandle1');
+  initBASlider('baSlider2', 'baAfter2', 'baHandle2');
+  initBASlider('baSlider3', 'baAfter3', 'baHandle3');
+  initBASlider('baSlider4', 'baAfter4', 'baHandle4');
+});
 
-  /* ─── NAVBAR: transparent → solid on scroll ──────── */
+/* ----------------------------------------------------------
+   NAVBAR — add .scrolled class after 60px
+   ---------------------------------------------------------- */
+function initNavbar() {
   const navbar = document.getElementById('navbar');
+  const handler = () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  };
+  window.addEventListener('scroll', handler, { passive: true });
+  handler(); // run on load in case page is refreshed mid-scroll
+}
 
-  function updateNavbar() {
-    if (window.scrollY > 60) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  }
-  window.addEventListener('scroll', updateNavbar, { passive: true });
-  updateNavbar();
+/* ----------------------------------------------------------
+   HAMBURGER MENU
+   ---------------------------------------------------------- */
+function initHamburger() {
+  const btn   = document.getElementById('hamburger');
+  const links = document.getElementById('navLinks');
+  if (!btn || !links) return;
 
-  /* ─── HAMBURGER MENU ─────────────────────────────── */
-  const hamburger = document.getElementById('hamburger');
-  const navLinks  = document.getElementById('navLinks');
-
-  hamburger.addEventListener('click', () => {
-    const isOpen = navLinks.classList.toggle('open');
-    hamburger.classList.toggle('open', isOpen);
-    hamburger.setAttribute('aria-expanded', String(isOpen));
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+  btn.addEventListener('click', () => {
+    const open = btn.classList.toggle('open');
+    links.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
   });
 
-  // Close menu when a nav link is clicked
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', 'false');
+  // Close on any nav link click
+  links.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      btn.classList.remove('open');
+      links.classList.remove('open');
       document.body.style.overflow = '';
     });
   });
+}
 
-  /* ─── SCROLL-REVEAL (Intersection Observer) ──────── */
-  const revealEls = document.querySelectorAll('.reveal');
+/* ----------------------------------------------------------
+   SCROLL REVEAL
+   ---------------------------------------------------------- */
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
 
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.12,
-    rootMargin: '0px 0px -40px 0px',
-  });
+  const observer = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    }),
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  );
+  els.forEach(el => observer.observe(el));
+}
 
-  revealEls.forEach(el => revealObserver.observe(el));
-
-  /* ─── GALLERY LIGHTBOX ───────────────────────────── */
-  const galleryItems  = Array.from(document.querySelectorAll('.gallery-item'));
-  const lightbox      = document.getElementById('lightbox');
-  const lightboxImg   = document.getElementById('lightboxImg');
-  const lightboxClose = document.getElementById('lightboxClose');
-  const lightboxPrev  = document.getElementById('lightboxPrev');
-  const lightboxNext  = document.getElementById('lightboxNext');
-  let currentIndex    = 0;
-
-  function getImageSrc(item) {
-    const img = item.querySelector('img');
-    return img ? img.src : '';
-  }
-  function getImageAlt(item) {
-    const img = item.querySelector('img');
-    return img ? img.alt : '';
-  }
-
-  function openLightbox(index) {
-    currentIndex = index;
-    lightboxImg.src = getImageSrc(galleryItems[index]);
-    lightboxImg.alt = getImageAlt(galleryItems[index]);
-    lightbox.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    lightboxClose.focus();
-  }
-
-  function closeLightbox() {
-    lightbox.classList.remove('active');
-    lightboxImg.src = '';
-    document.body.style.overflow = '';
-  }
-
-  function showNext() {
-    currentIndex = (currentIndex + 1) % galleryItems.length;
-    lightboxImg.src = getImageSrc(galleryItems[currentIndex]);
-    lightboxImg.alt = getImageAlt(galleryItems[currentIndex]);
-  }
-
-  function showPrev() {
-    currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
-    lightboxImg.src = getImageSrc(galleryItems[currentIndex]);
-    lightboxImg.alt = getImageAlt(galleryItems[currentIndex]);
-  }
-
-  galleryItems.forEach((item, i) => {
-    item.addEventListener('click', () => openLightbox(i));
-    // Keyboard accessibility
-    item.setAttribute('tabindex', '0');
-    item.setAttribute('role', 'button');
-    item.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(i); }
-    });
-  });
-
-  lightboxClose.addEventListener('click', closeLightbox);
-  lightboxNext.addEventListener('click', showNext);
-  lightboxPrev.addEventListener('click', showPrev);
-
-  // Close on backdrop click
-  lightbox.addEventListener('click', e => {
-    if (e.target === lightbox) closeLightbox();
-  });
-
-  // Keyboard navigation
-  document.addEventListener('keydown', e => {
-    if (!lightbox.classList.contains('active')) return;
-    if (e.key === 'Escape')      closeLightbox();
-    if (e.key === 'ArrowRight')  showNext();
-    if (e.key === 'ArrowLeft')   showPrev();
-  });
-
-  /* ─── CONTACT FORM ───────────────────────────────── */
-  const contactForm = document.getElementById('contactForm');
-  const toast       = document.getElementById('toast');
-
-  contactForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const btn = contactForm.querySelector('.btn[type="submit"]');
-    const btnText = btn.querySelector('.btn-text');
-
-    // Simple validation
-    const required = contactForm.querySelectorAll('[required]');
-    let valid = true;
-    required.forEach(field => {
-      field.style.borderColor = '';
-      if (!field.value.trim()) {
-        field.style.borderColor = '#EF4444';
-        valid = false;
-      }
-    });
-    if (!valid) return;
-
-    // Loading state
-    btnText.textContent = 'Sending…';
-    btn.disabled = true;
-    btn.style.opacity = '0.75';
-
-    // Simulate async send (swap with real endpoint when ready)
-    setTimeout(() => {
-      btnText.textContent = 'Send My Request';
-      btn.disabled = false;
-      btn.style.opacity = '';
-      contactForm.reset();
-      showToast();
-    }, 1400);
-  });
-
-  function showToast() {
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 4000);
-  }
-
-  /* ─── ACTIVE NAV LINK on scroll ─────────────────── */
-  const sections = document.querySelectorAll('section[id]');
-  const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
-
-  function onScrollSpy() {
-    const navHeight = navbar ? navbar.offsetHeight : 80;
-    let current = '';
-    sections.forEach(sec => {
-      const top = sec.offsetTop - navHeight - 10;
-      if (window.scrollY >= top) current = sec.id;
-    });
-    navAnchors.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
-    });
-  }
-
-  // Simple scroll spy with throttle
-  let spyTick = false;
-  window.addEventListener('scroll', () => {
-    if (!spyTick) {
-      requestAnimationFrame(() => { onScrollSpy(); spyTick = false; });
-      spyTick = true;
-    }
-  }, { passive: true });
-
-  /* ─── SMOOTH SCROLL OFFSET (account for sticky nav) */
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const target = document.querySelector(this.getAttribute('href'));
+/* ----------------------------------------------------------
+   SMOOTH SCROLL — offset for fixed navbar
+   ---------------------------------------------------------- */
+function initSmoothScroll() {
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      if (!id) return;
+      const target = document.getElementById(id);
       if (!target) return;
       e.preventDefault();
-      const offset = parseInt(getComputedStyle(document.documentElement)
-        .getPropertyValue('--nav-h').trim(), 10) || 80;
-      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      const navH = document.getElementById('navbar')?.offsetHeight ?? 80;
+      const top  = target.getBoundingClientRect().top + window.scrollY - navH;
       window.scrollTo({ top, behavior: 'smooth' });
     });
   });
+}
 
-  /* ─── HERO: navbar always scrolled (no transparent) 
-         when page loads mid-way (e.g. anchor links)  */
-  if (window.scrollY > 10) updateNavbar();
+/* ----------------------------------------------------------
+   SCROLL SPY — highlight active nav link
+   ---------------------------------------------------------- */
+function initScrollSpy() {
+  const sections = ['services', 'about', 'before-after', 'process', 'contact'].map(id => document.getElementById(id)).filter(Boolean);
+  const links    = document.querySelectorAll('.nav-links a[data-section]');
 
-})();
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.nav-links a[data-section="${e.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    },
+    { rootMargin: '-30% 0px -60% 0px' }
+  );
+  sections.forEach(s => observer.observe(s));
+}
+
+/* ----------------------------------------------------------
+   GALLERY LIGHTBOX
+   ---------------------------------------------------------- */
+function initGalleryLightbox() {
+  const items    = document.querySelectorAll('.gallery-item');
+  const lightbox = document.getElementById('lightbox');
+  const img      = document.getElementById('lightboxImg');
+  const closeBtn = document.getElementById('lightboxClose');
+  const prevBtn  = document.getElementById('lightboxPrev');
+  const nextBtn  = document.getElementById('lightboxNext');
+  if (!lightbox || !items.length) return;
+
+  let current = 0;
+  const srcs  = Array.from(items).map(el => el.querySelector('img').src);
+
+  function open(idx) {
+    current = (idx + srcs.length) % srcs.length;
+    img.src = srcs[current];
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  items.forEach((item, i) => item.addEventListener('click', () => open(i)));
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', () => open(current - 1));
+  nextBtn.addEventListener('click', () => open(current + 1));
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) close(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape')     close();
+    if (e.key === 'ArrowLeft')  open(current - 1);
+    if (e.key === 'ArrowRight') open(current + 1);
+  });
+}
+
+/* ----------------------------------------------------------
+   BEFORE & AFTER DRAG SLIDER
+   ---------------------------------------------------------- */
+function initBASlider(sliderId, afterId, handleId) {
+  const slider = document.getElementById(sliderId);
+  const after  = document.getElementById(afterId);
+  const handle = document.getElementById(handleId);
+  if (!slider || !after || !handle) return;
+
+  let dragging = false;
+  let pct = 50; // start at 50%
+
+  function setPct(x) {
+    const rect = slider.getBoundingClientRect();
+    pct = Math.min(100, Math.max(0, ((x - rect.left) / rect.width) * 100));
+    after.style.clipPath  = `inset(0 ${100 - pct}% 0 0)`;
+    handle.style.left     = `${pct}%`;
+  }
+
+  // Initialise at 50%
+  after.style.clipPath = 'inset(0 50% 0 0)';
+  handle.style.left    = '50%';
+
+  slider.addEventListener('mousedown',  e => { dragging = true; setPct(e.clientX); });
+  slider.addEventListener('touchstart', e => { dragging = true; setPct(e.touches[0].clientX); }, { passive: true });
+
+  window.addEventListener('mousemove',  e => { if (dragging) setPct(e.clientX); });
+  window.addEventListener('touchmove',  e => { if (dragging) setPct(e.touches[0].clientX); }, { passive: true });
+
+  window.addEventListener('mouseup',    () => { dragging = false; });
+  window.addEventListener('touchend',   () => { dragging = false; });
+
+  // Keyboard accessibility
+  handle.setAttribute('tabindex', '0');
+  handle.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  { pct = Math.max(0, pct - 2);   after.style.clipPath = `inset(0 ${100-pct}% 0 0)`; handle.style.left = `${pct}%`; }
+    if (e.key === 'ArrowRight') { pct = Math.min(100, pct + 2); after.style.clipPath = `inset(0 ${100-pct}% 0 0)`; handle.style.left = `${pct}%`; }
+  });
+}
+
+/* ----------------------------------------------------------
+   GALLERY MOBILE TOGGLE — show/hide extra photos
+   ---------------------------------------------------------- */
+function initGalleryToggle() {
+  const btn    = document.getElementById('galleryToggleBtn');
+  const label  = document.getElementById('galleryToggleLabel');
+  const icon   = document.getElementById('galleryToggleIcon');
+  const extras = document.querySelectorAll('.gallery-extra');
+  if (!btn || !extras.length) return;
+
+  let open = false;
+
+  btn.addEventListener('click', () => {
+    open = !open;
+    extras.forEach(el => el.classList.toggle('shown', open));
+    label.textContent = open ? 'Show Less' : `Show All ${extras.length + 6} Photos`;
+    btn.classList.toggle('open', open);
+
+    // Trigger reveal on newly shown items
+    if (open) {
+      extras.forEach(el => {
+        if (!el.classList.contains('visible')) el.classList.add('visible');
+      });
+    }
+  });
+}
+
+/* ----------------------------------------------------------
+   CONTACT FORM
+   ---------------------------------------------------------- */
+function initContactForm() {
+  const form  = document.getElementById('contactForm');
+  const toast = document.getElementById('toast');
+  const msg   = document.getElementById('toastMsg');
+  if (!form) return;
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const required = form.querySelectorAll('[required]');
+    let valid = true;
+
+    required.forEach(field => {
+      const ok = field.value.trim() !== '' && (field.type !== 'email' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value));
+      field.style.borderColor = ok ? '' : '#CC1A1A';
+      if (!ok) valid = false;
+    });
+
+    if (!valid) {
+      showToast('Please fill in all required fields.', false);
+      return;
+    }
+
+    // Simulate submission (replace with real endpoint)
+    showToast('Your request has been sent! We\'ll be in touch within 1 business day.');
+    form.reset();
+    form.querySelectorAll('input, select, textarea').forEach(f => f.style.borderColor = '');
+  });
+
+  function showToast(message, success = true) {
+    msg.textContent = message;
+    const icon = toast.querySelector('svg');
+    icon.style.color = success ? '#22c55e' : '#CC1A1A';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4500);
+  }
+
+  // Clear red border on input
+  form.querySelectorAll('input, select, textarea').forEach(field => {
+    field.addEventListener('input', () => { field.style.borderColor = ''; });
+  });
+}
