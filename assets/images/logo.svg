@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+
+  <!-- Outer circle ring -->
+  <circle cx="100" cy="100" r="88" stroke="#1D3461" stroke-width="2.2"/>
+  <!-- Inner accent ring -->
+  <circle cx="100" cy="100" r="83" stroke="#1D3461" stroke-width="0.6" opacity="0.35"/>
+
+  <!-- "BUILD & DESIGN" arced text along top inside the ring -->
+  <defs>
+    <!-- Counterclockwise from left to right = arcs over the top, text reads left’right -->
+    <path id="topArc" d="M 26,100 A 74,74 0 0,0 174,100"/>
+  </defs>
+  <text
+    font-family="'Inter', Arial, Helvetica, sans-serif"
+    font-size="8.2"
+    font-weight="700"
+    letter-spacing="3.8"
+    fill="#1D3461"
+    text-anchor="middle"
+  >
+    <textPath href="#topArc" xlink:href="#topArc" startOffset="50%">BUILD &amp; DESIGN</textPath>
+  </text>
+
+  <!-- Diagonal divider slash  subtle, positioned between T and W -->
+  <line x1="103" y1="36" x2="97" y2="162" stroke="#1D3461" stroke-width="1.2" opacity="0.5"/>
+
+  <!-- T  large serif, left side of circle -->
+  <text
+    x="14"
+    y="148"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="96"
+    font-weight="700"
+    fill="#1D3461"
+  >T</text>
+
+  <!-- W  serif, right side, slightly smaller -->
+  <text
+    x="97"
+    y="148"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="72"
+    font-weight="700"
+    fill="#1D3461"
+  >W</text>
+
+</svg>
