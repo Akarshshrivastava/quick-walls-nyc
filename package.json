@@ -1,1 +1,10 @@
-{"type":"module","devDependencies":{"jimp":"^1.6.0"}}
+{
+  "type": "module",
+  "scripts": {
+    "dev": "serve -l 3000 ."
+  },
+  "devDependencies": {
+    "jimp": "^1.6.0",
+    "serve": "^14.2.4"
+  }
+}

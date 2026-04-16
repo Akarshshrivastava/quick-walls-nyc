@@ -1,5 +1,5 @@
 /* ==========================================================
-   MAIN.JS — Start to Finish Construction LLC
+   MAIN.JS — Fine Lines Pavement LLC
    ========================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactForm();
   initBASlider('baSlider1', 'baAfter1', 'baHandle1');
   initBASlider('baSlider2', 'baAfter2', 'baHandle2');
-  initBASlider('baSlider3', 'baAfter3', 'baHandle3');
-  initBASlider('baSlider4', 'baAfter4', 'baHandle4');
 });
 
 /* ----------------------------------------------------------
@@ -91,7 +89,16 @@ function initSmoothScroll() {
    SCROLL SPY — highlight active nav link
    ---------------------------------------------------------- */
 function initScrollSpy() {
-  const sections = ['services', 'about', 'before-after', 'process', 'contact'].map(id => document.getElementById(id)).filter(Boolean);
+  const sections = [
+    'services',
+    'gallery',
+    'before-after',
+    'about',
+    'process',
+    'contact',
+  ]
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
   const links    = document.querySelectorAll('.nav-links a[data-section]');
 
   const observer = new IntersectionObserver(
