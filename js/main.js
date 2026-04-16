@@ -1,5 +1,5 @@
 /* ==========================================================
-   MAIN.JS — Fine Lines Pavement LLC
+   MAIN.JS — Kingdom Carpentry
    ========================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,8 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initGalleryLightbox();
   initGalleryToggle();
   initContactForm();
-  initBASlider('baSlider1', 'baAfter1', 'baHandle1');
-  initBASlider('baSlider2', 'baAfter2', 'baHandle2');
 });
 
 /* ----------------------------------------------------------
@@ -92,7 +90,7 @@ function initScrollSpy() {
   const sections = [
     'services',
     'gallery',
-    'before-after',
+    'principles',
     'about',
     'process',
     'contact',
@@ -156,46 +154,6 @@ function initGalleryLightbox() {
 }
 
 /* ----------------------------------------------------------
-   BEFORE & AFTER DRAG SLIDER
-   ---------------------------------------------------------- */
-function initBASlider(sliderId, afterId, handleId) {
-  const slider = document.getElementById(sliderId);
-  const after  = document.getElementById(afterId);
-  const handle = document.getElementById(handleId);
-  if (!slider || !after || !handle) return;
-
-  let dragging = false;
-  let pct = 50; // start at 50%
-
-  function setPct(x) {
-    const rect = slider.getBoundingClientRect();
-    pct = Math.min(100, Math.max(0, ((x - rect.left) / rect.width) * 100));
-    after.style.clipPath  = `inset(0 ${100 - pct}% 0 0)`;
-    handle.style.left     = `${pct}%`;
-  }
-
-  // Initialise at 50%
-  after.style.clipPath = 'inset(0 50% 0 0)';
-  handle.style.left    = '50%';
-
-  slider.addEventListener('mousedown',  e => { dragging = true; setPct(e.clientX); });
-  slider.addEventListener('touchstart', e => { dragging = true; setPct(e.touches[0].clientX); }, { passive: true });
-
-  window.addEventListener('mousemove',  e => { if (dragging) setPct(e.clientX); });
-  window.addEventListener('touchmove',  e => { if (dragging) setPct(e.touches[0].clientX); }, { passive: true });
-
-  window.addEventListener('mouseup',    () => { dragging = false; });
-  window.addEventListener('touchend',   () => { dragging = false; });
-
-  // Keyboard accessibility
-  handle.setAttribute('tabindex', '0');
-  handle.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft')  { pct = Math.max(0, pct - 2);   after.style.clipPath = `inset(0 ${100-pct}% 0 0)`; handle.style.left = `${pct}%`; }
-    if (e.key === 'ArrowRight') { pct = Math.min(100, pct + 2); after.style.clipPath = `inset(0 ${100-pct}% 0 0)`; handle.style.left = `${pct}%`; }
-  });
-}
-
-/* ----------------------------------------------------------
    GALLERY MOBILE TOGGLE — show/hide extra photos
    ---------------------------------------------------------- */
 function initGalleryToggle() {
@@ -210,7 +168,9 @@ function initGalleryToggle() {
   btn.addEventListener('click', () => {
     open = !open;
     extras.forEach(el => el.classList.toggle('shown', open));
-    label.textContent = open ? 'Show Less' : `Show All ${extras.length + 6} Photos`;
+    const baseCount = document.querySelectorAll('.gallery-item:not(.gallery-extra)').length;
+    const total = baseCount + extras.length;
+    label.textContent = open ? 'Show Less' : `Show All ${total} Photos`;
     btn.classList.toggle('open', open);
 
     // Trigger reveal on newly shown items
