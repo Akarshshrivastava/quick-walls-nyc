@@ -1,5 +1,5 @@
 /* ==========================================================
-   MAIN.JS — Kingdom Carpentry
+   MAIN.JS — Quick Wall NYC
    ========================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initSmoothScroll();
   initScrollSpy();
+  initBeforeAfterSliders();
   initGalleryLightbox();
   initGalleryToggle();
   initContactForm();
@@ -22,7 +23,7 @@ function initNavbar() {
     navbar.classList.toggle('scrolled', window.scrollY > 60);
   };
   window.addEventListener('scroll', handler, { passive: true });
-  handler(); // run on load in case page is refreshed mid-scroll
+  handler();
 }
 
 /* ----------------------------------------------------------
@@ -39,7 +40,6 @@ function initHamburger() {
     document.body.style.overflow = open ? 'hidden' : '';
   });
 
-  // Close on any nav link click
   links.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
       btn.classList.remove('open');
@@ -90,14 +90,12 @@ function initScrollSpy() {
   const sections = [
     'services',
     'gallery',
-    'principles',
     'about',
-    'process',
     'contact',
   ]
     .map(id => document.getElementById(id))
     .filter(Boolean);
-  const links    = document.querySelectorAll('.nav-links a[data-section]');
+  const links = document.querySelectorAll('.nav-links a[data-section]');
 
   const observer = new IntersectionObserver(
     entries => {
@@ -112,6 +110,48 @@ function initScrollSpy() {
     { rootMargin: '-30% 0px -60% 0px' }
   );
   sections.forEach(s => observer.observe(s));
+}
+
+/* ----------------------------------------------------------
+   BEFORE / AFTER COMPARE SLIDERS
+   Each [data-compare] element contains:
+     .ba-after (clipped layer)
+     .ba-handle-track (the draggable line + button)
+   ---------------------------------------------------------- */
+function initBeforeAfterSliders() {
+  document.querySelectorAll('[data-compare]').forEach(slider => {
+    const afterLayer  = slider.querySelector('.ba-after');
+    const handleTrack = slider.querySelector('.ba-handle-track');
+    if (!afterLayer || !handleTrack) return;
+
+    let dragging = false;
+
+    function setPosition(clientX) {
+      const rect = slider.getBoundingClientRect();
+      let pct = ((clientX - rect.left) / rect.width) * 100;
+      pct = Math.max(3, Math.min(97, pct));
+      // Clip the "after" layer from the right — reveal grows left to right
+      afterLayer.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+      handleTrack.style.left = pct + '%';
+    }
+
+    // Start drag on handle button or anywhere on slider
+    handleTrack.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+    slider.addEventListener('mousedown', e => { dragging = true; setPosition(e.clientX); });
+    document.addEventListener('mouseup', () => { dragging = false; });
+    document.addEventListener('mousemove', e => { if (dragging) setPosition(e.clientX); });
+
+    // Touch support
+    handleTrack.addEventListener('touchstart', () => { dragging = true; }, { passive: true });
+    document.addEventListener('touchend', () => { dragging = false; });
+    document.addEventListener('touchmove', e => {
+      if (dragging) setPosition(e.touches[0].clientX);
+    }, { passive: true });
+
+    // Initialise at 50%
+    const rect = slider.getBoundingClientRect();
+    setPosition(rect.left + rect.width / 2);
+  });
 }
 
 /* ----------------------------------------------------------
@@ -154,7 +194,7 @@ function initGalleryLightbox() {
 }
 
 /* ----------------------------------------------------------
-   GALLERY MOBILE TOGGLE — show/hide extra photos
+   GALLERY MOBILE TOGGLE
    ---------------------------------------------------------- */
 function initGalleryToggle() {
   const btn    = document.getElementById('galleryToggleBtn');
@@ -173,7 +213,6 @@ function initGalleryToggle() {
     label.textContent = open ? 'Show Less' : `Show All ${total} Photos`;
     btn.classList.toggle('open', open);
 
-    // Trigger reveal on newly shown items
     if (open) {
       extras.forEach(el => {
         if (!el.classList.contains('visible')) el.classList.add('visible');
@@ -207,8 +246,7 @@ function initContactForm() {
       return;
     }
 
-    // Simulate submission (replace with real endpoint)
-    showToast('Your request has been sent! We\'ll be in touch within 1 business day.');
+    showToast('Your request has been sent! We\'ll be in touch soon.');
     form.reset();
     form.querySelectorAll('input, select, textarea').forEach(f => f.style.borderColor = '');
   });
@@ -221,7 +259,6 @@ function initContactForm() {
     setTimeout(() => toast.classList.remove('show'), 4500);
   }
 
-  // Clear red border on input
   form.querySelectorAll('input, select, textarea').forEach(field => {
     field.addEventListener('input', () => { field.style.borderColor = ''; });
   });
