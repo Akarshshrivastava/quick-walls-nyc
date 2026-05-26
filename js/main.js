@@ -34,18 +34,43 @@ function initHamburger() {
   const links = document.getElementById('navLinks');
   if (!btn || !links) return;
 
+  let isOpen = false;
+
+  function openMenu() {
+    isOpen = true;
+    btn.classList.add('open');
+    links.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeMenu() {
+    isOpen = false;
+    btn.classList.remove('open');
+    links.classList.remove('open');
+    document.body.style.overflow = '';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
   btn.addEventListener('click', () => {
-    const open = btn.classList.toggle('open');
-    links.classList.toggle('open', open);
-    document.body.style.overflow = open ? 'hidden' : '';
+    isOpen ? closeMenu() : openMenu();
   });
 
+  // Close when a nav link is tapped
   links.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      btn.classList.remove('open');
-      links.classList.remove('open');
-      document.body.style.overflow = '';
-    });
+    a.addEventListener('click', closeMenu);
+  });
+
+  // Close when tapping outside the menu
+  document.addEventListener('click', e => {
+    if (isOpen && !btn.contains(e.target) && !links.contains(e.target)) {
+      closeMenu();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && isOpen) closeMenu();
   });
 }
 
